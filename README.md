@@ -112,12 +112,12 @@ The frontend provides:
 
 ## 🚀 Getting Started
 
-### **1. Install & Run Next.js Frontend**
+### **1. Run Next.js Frontend**
 
-Run this ONE command to create your Next.js project:
+Assuming dependencies are installed:
 
 ```
-npx create-next-app@latest
+npm run dev
 ```
 
 ### **2. Start FastAPI Backend**
