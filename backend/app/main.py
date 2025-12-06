@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 # Import routers
-from app.routers import chemistry, economics, geography
+from app.routers import chemistry, economics, geography, religious_studies, french
 
 app = FastAPI(
     title="LEWA - AI Tutor",
@@ -35,7 +35,9 @@ async def root():
         "endpoints": {
             "geography": "/api/geography",
             "chemistry": "/api/chemistry",
-            "economics": "/api/economics"
+            "economics": "/api/economics",
+            "religious_studies": "/api/religious_studies",
+            "french": "/api/french"
         }
     }
 
@@ -43,3 +45,5 @@ async def root():
 app.include_router(geography.router, prefix="/api", tags=["Geography"])
 app.include_router(chemistry.router, prefix="/api", tags=["Chemistry"])
 app.include_router(economics.router, prefix="/api", tags=["Economics"])
+app.include_router(religious_studies.router, prefix="/api", tags=["Religious Studies"])
+app.include_router(french.router, prefix="/api", tags=["French"])

@@ -38,7 +38,9 @@ def main():
     results = [
         test_endpoint("geography", "What are the major rivers in Cameroon?", "OL"),
         test_endpoint("chemistry", "Explain the difference between ionic and covalent bonds.", "OL"),
-        test_endpoint("economics", "What is opportunity cost?", "OL")
+        test_endpoint("economics", "What is opportunity cost?", "OL"),
+        test_endpoint("religious_studies", "Who were the first disciples of Jesus?", "OL"),
+        test_endpoint("french", "Conjugate the verb être in present tense", "OL")
     ]
     
     if all(results):
