@@ -1,0 +1,30 @@
+export const colors = {
+  light: {
+    primary: '#6366f1',
+    secondary: '#8b5cf6',
+    accent: '#ec4899',
+    success: '#10b981',
+    warning: '#f59e0b',
+    bg: '#ffffff',
+    bgSecondary: '#f8fafc',
+    bgTertiary: '#f1f5f9',
+    text: '#0f172a',
+    textSecondary: '#475569',
+    border: '#e2e8f0',
+    shadow: 'rgba(0, 0, 0, 0.1)',
+  },
+  dark: {
+    primary: '#818cf8',
+    secondary: '#a78bfa',
+    accent: '#f472b6',
+    success: '#34d399',
+    warning: '#fbbf24',
+    bg: '#0f172a',
+    bgSecondary: '#1e293b',
+    bgTertiary: '#334155',
+    text: '#f1f5f9',
+    textSecondary: '#cbd5e1',
+    border: '#334155',
+    shadow: 'rgba(0, 0, 0, 0.3)',
+  }
+};
