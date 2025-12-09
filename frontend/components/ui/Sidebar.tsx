@@ -1,5 +1,5 @@
-import React from 'react';
-import { GraduationCap, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { GraduationCap, ChevronRight, Search } from 'lucide-react';
 import { subjects } from '../../lib/subjects';
 import { Subject } from '../../../types';
 
@@ -17,6 +17,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSubjectSelect,
   currentColors,
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredSubjects = subjects.filter(subject =>
+    subject.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const styles = {
     sidebar: {
       width: isOpen ? '280px' : '0',
@@ -31,35 +37,57 @@ export const Sidebar: React.FC<SidebarProps> = ({
       padding: '24px 20px',
       borderBottom: `1px solid ${currentColors.border}`,
       display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
+      flexDirection: 'column' as const,
+      gap: '16px',
     },
     logo: {
       fontSize: '28px',
       fontWeight: '800',
-      background: `linear-gradient(135deg, ${currentColors.primary}, ${currentColors.secondary})`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
+      color: currentColors.primary, // Fixed visibility: plain color
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
     },
+    searchContainer: {
+      position: 'relative' as const,
+    },
+    searchInput: {
+      width: '100%',
+      padding: '10px 12px 10px 36px',
+      borderRadius: '8px',
+      border: `1px solid ${currentColors.border}`,
+      backgroundColor: currentColors.bgTertiary,
+      color: currentColors.textPrimary,
+      fontSize: '14px',
+      outline: 'none',
+    },
+    searchIcon: {
+      position: 'absolute' as const,
+      left: '10px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: currentColors.textSecondary,
+    },
     subjectsList: {
       flex: 1,
       overflowY: 'auto' as const,
-      padding: '12px',
+      padding: '16px',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '8px',
     },
-    subjectItem: (subject: Subject) => ({
+    subjectButton: (subject: Subject, isSelected: boolean) => ({
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
       padding: '14px 16px',
-      margin: '4px 0',
       borderRadius: '12px',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
-      backgroundColor: selectedSubject?.id === subject.id ? currentColors.bgTertiary : 'transparent',
-      border: selectedSubject?.id === subject.id ? `2px solid ${subject.color}` : '2px solid transparent',
+      backgroundColor: isSelected ? currentColors.primary + '15' : currentColors.bgTertiary, // Button-like bg
+      border: isSelected ? `2px solid ${subject.color}` : '1px solid transparent',
+      boxShadow: isSelected ? `0 0 10px ${subject.color}20` : 'none',
+      color: currentColors.textPrimary,
     }),
   };
 
@@ -70,24 +98,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <GraduationCap size={32} />
           LEWA
         </div>
+        <div style={styles.searchContainer}>
+          <Search size={16} style={styles.searchIcon} />
+          <input
+            type="text"
+            placeholder="Search subjects..."
+            style={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
       </div>
       <div style={styles.subjectsList}>
-        <div style={{ padding: '8px 16px', fontSize: '12px', fontWeight: '600', color: currentColors.textSecondary, textTransform: 'uppercase', letterSpacing: '1px' }}>
-          Subjects
+        <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: '600', color: currentColors.textSecondary, textTransform: 'uppercase', letterSpacing: '1px' }}>
+          Menu
         </div>
-        {subjects.map(subject => (
-          <div
-            key={subject.id}
-            style={styles.subjectItem(subject)}
-            onClick={() => onSubjectSelect(subject)}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = currentColors.bgTertiary}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedSubject?.id === subject.id ? currentColors.bgTertiary : 'transparent'}
-          >
-            <span style={{ fontSize: '24px' }}>{subject.icon}</span>
-            <span style={{ flex: 1, fontWeight: '500' }}>{subject.name}</span>
-            {selectedSubject?.id === subject.id && <ChevronRight size={20} color={subject.color} />}
-          </div>
-        ))}
+        {filteredSubjects.map(subject => {
+          const isSelected = selectedSubject?.id === subject.id;
+          return (
+            <div
+              key={subject.id}
+              style={styles.subjectButton(subject, isSelected)}
+              onClick={() => onSubjectSelect(subject)}
+              onMouseEnter={(e) => {
+                if (!isSelected) e.currentTarget.style.backgroundColor = currentColors.bgTertiary + '99';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) e.currentTarget.style.backgroundColor = currentColors.bgTertiary;
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span style={{ fontSize: '24px' }}>{subject.icon}</span>
+              <span style={{ flex: 1, fontWeight: '600' }}>{subject.name}</span>
+              {isSelected && <ChevronRight size={20} color={subject.color} />}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
