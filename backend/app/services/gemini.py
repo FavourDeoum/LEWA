@@ -1,55 +1,51 @@
 """
-Gemini Service
-Handles interactions with Google's Gemini Pro API.
+LLM Service
+Handles interactions with Groq API (replacing Gemini).
 """
 import os
-import google.generativeai as genai
+from groq import Groq
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-class GeminiService:
+class LLMService:
     def __init__(self):
-        if not GEMINI_API_KEY:
-            # We allow initialization without key for CI/CD or build phases, 
-            # but methods will fail if called.
-            print("WARNING: GEMINI_API_KEY not found in environment variables.")
+        if not GROQ_API_KEY:
+            print("WARNING: GROQ_API_KEY not found in environment variables.")
+            self.client = None
         else:
-            genai.configure(api_key=GEMINI_API_KEY)
-            # using gemini-2.0-flash as it is available in the user's account
-            self.model = genai.GenerativeModel('gemini-2.0-flash')
+            self.client = Groq(api_key=GROQ_API_KEY)
+            self.model = "llama-3.3-70b-versatile"  # High performance model
 
     async def generate_content(self, system_prompt: str, user_prompt: str) -> str:
         """
-        Generates content using Gemini Pro.
-        
-        Args:
-            system_prompt: The persona or rules for the AI.
-            user_prompt: The user's input question or request.
-            
-        Returns:
-            The generated text response.
+        Generates content using Groq (Llama 3.3).
         """
-        if not GEMINI_API_KEY:
-            return "Error: Gemini API key is missing. Please configure it in the .env file."
+        if not self.client:
+            return "Error: GROQ_API_KEY is missing. Please configure it in the .env file."
         
         try:
-            # Gemini Pro doesn't have a distinct "system" role in the same way as ChatCompletions 
-            # in some other APIs, but we can prepend the system instructions or use new system instruction features if available.
-            # For standard gemini-pro, prepending context is reliable.
-            
-            full_prompt = f"{system_prompt}\n\nUser Question: {user_prompt}"
-            
-            response = self.model.generate_content(full_prompt)
-            return response.text
+            chat_completion = self.client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "system",
+                        "content": system_prompt,
+                    },
+                    {
+                        "role": "user",
+                        "content": user_prompt,
+                    }
+                ],
+                model=self.model,
+                temperature=0.7,
+                max_tokens=1024,
+            )
+            return chat_completion.choices[0].message.content
         except Exception as e:
-            error_msg = str(e)
-            if "429" in error_msg or "quota" in error_msg.lower():
-                return "Error: Quota exceeded. Please try again in a moment. (Rate limit reached)"
-            return f"Error generating response: {error_msg}"
+            return f"Error generating response: {str(e)}"
 
-# Singleton instance
-gemini_service = GeminiService()
+# Singleton instance (keeping the name gemini_service to avoid refactoring all routers)
+gemini_service = LLMService()
