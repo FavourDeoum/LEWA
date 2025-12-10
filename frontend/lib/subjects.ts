@@ -9,7 +9,7 @@ export const subjects = [
   { id: 'biology', name: 'Biology', icon: '🧬', color: '#10b981' },
   { id: 'history', name: 'History', icon: '🏛️', color: '#64748b' },
   { id: 'french', name: 'French', icon: '🇫🇷', color: '#6366f1' },
-  { id: 'religious', name: 'Religious Studies', icon: '✝️', color: '#a855f7' },
+  { id: 'religious_studies', name: 'Religious Studies', icon: '✝️', color: '#a855f7' },
 ];
 
 export const tools = [

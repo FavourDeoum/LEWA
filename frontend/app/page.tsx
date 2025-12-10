@@ -18,6 +18,9 @@ const LEWAApp = () => {
     selectedMode,
     chatStarted,
     messages,
+    isLoading,
+    activeTool,
+    setActiveTool,
     handleSubjectSelect,
     handleModeSelect,
     handleStartChat,
@@ -71,7 +74,6 @@ const LEWAApp = () => {
           theme={theme}
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           onToggleTheme={toggleTheme}
-          onToggleTools={() => setShowTools(!showTools)}
           currentColors={currentColors}
         />
 
@@ -92,6 +94,10 @@ const LEWAApp = () => {
               selectedSubject={selectedSubject}
               onSendMessage={sendMessage}
               currentColors={currentColors}
+              isLoading={isLoading}
+              onToggleTools={() => setShowTools(!showTools)}
+              activeTool={activeTool}
+              setActiveTool={setActiveTool}
             />
           )}
         </div>

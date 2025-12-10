@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Moon, Sun, Sparkles } from 'lucide-react';
-import { Subject, Mode } from '../../../types';
+import { Subject, Mode } from '../../types';
 
 interface HeaderProps {
   selectedSubject: Subject | null;
@@ -8,7 +8,6 @@ interface HeaderProps {
   theme: string;
   onToggleSidebar: () => void;
   onToggleTheme: () => void;
-  onToggleTools: () => void;
   currentColors: any;
 }
 
@@ -18,7 +17,6 @@ export const Header: React.FC<HeaderProps> = ({
   theme,
   onToggleSidebar,
   onToggleTheme,
-  onToggleTools,
   currentColors,
 }) => {
   const styles = {
@@ -71,9 +69,6 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
       <div style={styles.headerRight}>
-        <button style={styles.iconButton} onClick={onToggleTools}>
-          <Sparkles size={20} />
-        </button>
         <button style={styles.iconButton} onClick={onToggleTheme}>
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </button>

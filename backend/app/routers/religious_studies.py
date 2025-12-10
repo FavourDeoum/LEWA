@@ -59,7 +59,9 @@ EXAMPLE TOPICS:
 - Relationship between Religion and Science"""
 }
 
-@router.post("/religious_studies", response_model=SubjectResponse)
+from fastapi.responses import StreamingResponse
+
+@router.post("/religious_studies")
 async def chat_religious_studies(payload: SubjectRequest):
     """
     Religious Studies subject endpoint
@@ -68,7 +70,7 @@ async def chat_religious_studies(payload: SubjectRequest):
         payload: SubjectRequest with 'question' and 'mode' (OL or AL)
     
     Returns:
-        SubjectResponse with AI-generated answer
+        StreamingResponse with AI-generated text
     """
     
     if payload.mode not in ["OL", "AL"]:
@@ -79,13 +81,11 @@ async def chat_religious_studies(payload: SubjectRequest):
     
     system_prompt = RELIGIOUS_STUDIES_PROMPTS[payload.mode]
     
-    response_text = await gemini_service.generate_content(
-        system_prompt=system_prompt,
-        user_prompt=payload.question
-    )
-    
-    return SubjectResponse(
-        response=response_text,
-        subject="Religious Studies",
-        mode=payload.mode
+    # Return streaming response
+    return StreamingResponse(
+        gemini_service.generate_content_stream(
+            system_prompt=system_prompt,
+            user_prompt=payload.question
+        ),
+        media_type="text/plain"
     )

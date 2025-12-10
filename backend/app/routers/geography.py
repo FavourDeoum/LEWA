@@ -57,7 +57,9 @@ EXAMPLE TOPICS:
 
 from app.services.gemini import gemini_service
 
-@router.post("/geography", response_model=SubjectResponse)
+from fastapi.responses import StreamingResponse
+
+@router.post("/geography")
 async def chat_geography(payload: SubjectRequest):
     """
     Geography subject endpoint
@@ -66,7 +68,7 @@ async def chat_geography(payload: SubjectRequest):
         payload: SubjectRequest with 'question' and 'mode' (OL or AL)
     
     Returns:
-        SubjectResponse with AI-generated answer
+        StreamingResponse with AI-generated text
     
     Example:
         POST /api/geography
@@ -85,16 +87,13 @@ async def chat_geography(payload: SubjectRequest):
     # Get the appropriate system prompt based on mode
     system_prompt = GEOGRAPHY_PROMPTS[payload.mode]
     
-    # Call Gemini Pro
-    response_text = await gemini_service.generate_content(
-        system_prompt=system_prompt,
-        user_prompt=payload.question
-    )
-    
-    return SubjectResponse(
-        response=response_text,
-        subject="Geography",
-        mode=payload.mode
+    # Return streaming response
+    return StreamingResponse(
+        gemini_service.generate_content_stream(
+            system_prompt=system_prompt,
+            user_prompt=payload.question
+        ),
+        media_type="text/plain"
     )
 
 
