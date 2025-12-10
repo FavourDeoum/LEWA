@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GraduationCap, ChevronRight, Search } from 'lucide-react';
 import { subjects } from '../../lib/subjects';
-import { Subject } from '../../../types';
+import { Subject } from '../../types';
 
 interface SidebarProps {
   isOpen: boolean;
